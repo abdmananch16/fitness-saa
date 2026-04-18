@@ -3,109 +3,318 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
-  <title>Fitness Tracker</title>
-
-  <!-- Leaflet CSS (free map, no API key needed) -->
+  <title>FitTrack Pro</title>
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
 
-  <div class="app">
+  <!-- ── SIDEBAR ── -->
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-logo">
+      <span class="logo-icon">⚡</span>
+      <span class="logo-text">FitTrack</span>
+    </div>
+    <nav class="sidebar-nav">
+      <a class="nav-item active" data-page="dashboard" onclick="showPage('dashboard')">
+        <span class="nav-icon">🏠</span><span class="nav-label">Dashboard</span>
+      </a>
+      <a class="nav-item" data-page="map" onclick="showPage('map')">
+        <span class="nav-icon">🗺️</span><span class="nav-label">Live Map</span>
+      </a>
+      <a class="nav-item" data-page="stats" onclick="showPage('stats')">
+        <span class="nav-icon">📊</span><span class="nav-label">Stats</span>
+      </a>
+      <a class="nav-item" data-page="settings" onclick="showPage('settings')">
+        <span class="nav-icon">⚙️</span><span class="nav-label">Settings</span>
+      </a>
+    </nav>
+    <div class="sidebar-footer">
+      <div class="user-avatar">AM</div>
+      <div class="user-info">
+        <div class="user-name">Abdul Mannan</div>
+        <div class="user-plan">Pro Tracker</div>
+      </div>
+    </div>
+  </aside>
 
-    <!-- Header -->
-    <header class="header">
-      <div class="header-icon">🏃</div>
-      <div>
-        <h1>Fitness Tracker</h1>
-        <p class="subtitle">Step Counter + Live GPS Route</p>
-      </div>
-    </header>
+  <!-- ── MAIN ── -->
+  <main class="main">
 
-    <!-- Big Step Counter -->
-    <section class="hero-card">
-      <div class="hero-label">STEPS TODAY</div>
-      <div class="hero-value" id="step-count">0</div>
-      <div class="goal-row">
-        <span id="goal-text">0 / 10,000</span>
-        <span id="goal-pct">0%</span>
+    <!-- Top Bar -->
+    <div class="topbar">
+      <button class="menu-btn" onclick="toggleSidebar()">☰</button>
+      <div class="topbar-title" id="page-title">Dashboard</div>
+      <div class="topbar-right">
+        <div class="live-badge" id="live-badge">● LIVE</div>
+        <div class="date-display" id="date-display"></div>
       </div>
-      <div class="progress-bar">
-        <div class="progress-fill" id="progress-fill"></div>
-      </div>
-    </section>
-
-    <!-- Stats Row -->
-    <section class="stats-row">
-      <div class="stat-box">
-        <div class="stat-icon">📍</div>
-        <div class="stat-val" id="distance">0.00</div>
-        <div class="stat-lbl">km</div>
-      </div>
-      <div class="stat-box">
-        <div class="stat-icon">🔥</div>
-        <div class="stat-val" id="calories">0</div>
-        <div class="stat-lbl">kcal</div>
-      </div>
-      <div class="stat-box">
-        <div class="stat-icon">⏱️</div>
-        <div class="stat-val" id="duration">00:00</div>
-        <div class="stat-lbl">time</div>
-      </div>
-      <div class="stat-box">
-        <div class="stat-icon">💨</div>
-        <div class="stat-val" id="speed">0.0</div>
-        <div class="stat-lbl">km/h</div>
-      </div>
-    </section>
-
-    <!-- Map -->
-    <section class="map-wrap">
-      <div id="map"></div>
-      <div class="map-placeholder" id="map-placeholder">
-        <div class="placeholder-inner">
-          <span class="placeholder-icon">🗺️</span>
-          <span>Start tracking to see your route</span>
-        </div>
-      </div>
-    </section>
-
-    <!-- Controls -->
-    <section class="controls">
-      <button class="btn btn-start" id="btn-start" onclick="startTracking()">▶ Start</button>
-      <button class="btn btn-stop"  id="btn-stop"  onclick="stopTracking()"  disabled>⏹ Stop</button>
-      <button class="btn btn-reset" id="btn-reset" onclick="resetTracking()">🔄 Reset</button>
-    </section>
-
-    <!-- Status -->
-    <div class="status-bar">
-      <span id="status-msg">Ready — press Start to begin</span>
-      <span class="gps-badge" id="gps-badge">GPS Off</span>
     </div>
 
-    <!-- Detail Panel -->
-    <section class="detail-panel">
-      <div class="detail-row">
-        <span class="detail-lbl">Sensor</span>
-        <span class="detail-val" id="sensor-status">—</span>
-      </div>
-      <div class="detail-row">
-        <span class="detail-lbl">GPS Accuracy</span>
-        <span class="detail-val" id="gps-acc">—</span>
-      </div>
-      <div class="detail-row">
-        <span class="detail-lbl">Avg Pace</span>
-        <span class="detail-val" id="avg-pace">—</span>
-      </div>
-      <div class="detail-row">
-        <span class="detail-lbl">Route Points</span>
-        <span class="detail-val" id="route-pts">0</span>
-      </div>
-    </section>
+    <!-- ══ PAGE: DASHBOARD ══ -->
+    <div class="page active" id="page-dashboard">
 
-  </div>
+      <!-- Hero Step Ring -->
+      <div class="hero-section">
+        <div class="ring-container">
+          <svg class="ring-svg" viewBox="0 0 200 200">
+            <circle class="ring-bg"   cx="100" cy="100" r="80" />
+            <circle class="ring-fill" cx="100" cy="100" r="80" id="ring-circle" />
+          </svg>
+          <div class="ring-content">
+            <div class="ring-steps" id="ring-steps">0</div>
+            <div class="ring-label">STEPS</div>
+            <div class="ring-goal" id="ring-goal">Goal: 10,000</div>
+          </div>
+        </div>
 
-  <!-- Leaflet JS (free, no API key) -->
+        <div class="hero-stats">
+          <div class="hero-stat">
+            <div class="hs-icon">📍</div>
+            <div class="hs-val" id="h-distance">0.00</div>
+            <div class="hs-lbl">km</div>
+          </div>
+          <div class="hero-stat">
+            <div class="hs-icon">🔥</div>
+            <div class="hs-val" id="h-calories">0</div>
+            <div class="hs-lbl">kcal</div>
+          </div>
+          <div class="hero-stat">
+            <div class="hs-icon">⏱️</div>
+            <div class="hs-val" id="h-duration">00:00</div>
+            <div class="hs-lbl">time</div>
+          </div>
+          <div class="hero-stat">
+            <div class="hs-icon">💨</div>
+            <div class="hs-val" id="h-speed">0.0</div>
+            <div class="hs-lbl">km/h</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Control Buttons -->
+      <div class="control-row">
+        <button class="ctrl-btn start" id="btn-start" onclick="startTracking()">
+          <span class="ctrl-icon">▶</span>
+          <span>Start</span>
+        </button>
+        <button class="ctrl-btn stop" id="btn-stop" onclick="stopTracking()" disabled>
+          <span class="ctrl-icon">⏹</span>
+          <span>Stop</span>
+        </button>
+        <button class="ctrl-btn reset" id="btn-reset" onclick="resetTracking()">
+          <span class="ctrl-icon">🔄</span>
+          <span>Reset</span>
+        </button>
+      </div>
+
+      <!-- Status Strip -->
+      <div class="status-strip">
+        <div class="status-dot" id="status-dot"></div>
+        <span id="status-msg">Ready — press Start to begin</span>
+        <span class="gps-pill" id="gps-pill">GPS Off</span>
+      </div>
+
+      <!-- Metric Cards -->
+      <div class="cards-grid">
+        <div class="metric-card">
+          <div class="mc-header">
+            <span class="mc-title">Avg Pace</span>
+            <span class="mc-icon">🏃</span>
+          </div>
+          <div class="mc-value" id="c-pace">—</div>
+          <div class="mc-sub">min / km</div>
+        </div>
+        <div class="metric-card">
+          <div class="mc-header">
+            <span class="mc-title">GPS Accuracy</span>
+            <span class="mc-icon">📡</span>
+          </div>
+          <div class="mc-value" id="c-acc">—</div>
+          <div class="mc-sub">meters</div>
+        </div>
+        <div class="metric-card">
+          <div class="mc-header">
+            <span class="mc-title">Sensor</span>
+            <span class="mc-icon">📱</span>
+          </div>
+          <div class="mc-value" id="c-sensor" style="font-size:0.9rem">—</div>
+          <div class="mc-sub">motion</div>
+        </div>
+        <div class="metric-card">
+          <div class="mc-header">
+            <span class="mc-title">Route Points</span>
+            <span class="mc-icon">📌</span>
+          </div>
+          <div class="mc-value" id="c-pts">0</div>
+          <div class="mc-sub">recorded</div>
+        </div>
+      </div>
+
+      <!-- Weekly Bar Chart -->
+      <div class="chart-card">
+        <div class="chart-header">
+          <span class="chart-title">Weekly Steps</span>
+          <span class="chart-sub">Last 7 days</span>
+        </div>
+        <div class="bar-chart" id="bar-chart"></div>
+        <div class="bar-labels" id="bar-labels"></div>
+      </div>
+
+    </div>
+
+    <!-- ══ PAGE: MAP ══ -->
+    <div class="page" id="page-map">
+      <div class="map-page-header">
+        <h2>Live GPS Route</h2>
+        <p>Your route is drawn in real-time as you move</p>
+      </div>
+      <div class="map-wrap">
+        <div id="map"></div>
+        <div class="map-overlay" id="map-overlay">
+          <div class="map-overlay-inner">
+            <div style="font-size:3rem">🗺️</div>
+            <div>Start tracking to see your route</div>
+          </div>
+        </div>
+        <!-- Map Stats Overlay -->
+        <div class="map-stats-overlay">
+          <div class="mso-item">
+            <span id="mo-steps">0</span>
+            <span>steps</span>
+          </div>
+          <div class="mso-item">
+            <span id="mo-dist">0.00</span>
+            <span>km</span>
+          </div>
+          <div class="mso-item">
+            <span id="mo-time">00:00</span>
+            <span>time</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══ PAGE: STATS ══ -->
+    <div class="page" id="page-stats">
+      <div class="stats-page">
+        <h2>Activity Stats</h2>
+
+        <div class="stats-summary">
+          <div class="ss-card">
+            <div class="ss-icon">👟</div>
+            <div class="ss-val" id="ss-steps">0</div>
+            <div class="ss-lbl">Total Steps</div>
+          </div>
+          <div class="ss-card">
+            <div class="ss-icon">📍</div>
+            <div class="ss-val" id="ss-dist">0.00</div>
+            <div class="ss-lbl">Total km</div>
+          </div>
+          <div class="ss-card">
+            <div class="ss-icon">🔥</div>
+            <div class="ss-val" id="ss-cal">0</div>
+            <div class="ss-lbl">Calories</div>
+          </div>
+          <div class="ss-card">
+            <div class="ss-icon">⏱️</div>
+            <div class="ss-val" id="ss-time">00:00</div>
+            <div class="ss-lbl">Active Time</div>
+          </div>
+        </div>
+
+        <div class="progress-section">
+          <div class="ps-header">
+            <span>Daily Goal Progress</span>
+            <span id="ps-pct">0%</span>
+          </div>
+          <div class="ps-bar">
+            <div class="ps-fill" id="ps-fill"></div>
+          </div>
+          <div class="ps-labels">
+            <span id="ps-steps-text">0 steps</span>
+            <span>10,000 steps</span>
+          </div>
+        </div>
+
+        <div class="achievement-section">
+          <h3>Achievements</h3>
+          <div class="achievements" id="achievements">
+            <div class="ach-item locked" id="ach-1k">
+              <span class="ach-icon">🥉</span>
+              <span class="ach-name">First 1K</span>
+            </div>
+            <div class="ach-item locked" id="ach-5k">
+              <span class="ach-icon">🥈</span>
+              <span class="ach-name">5K Steps</span>
+            </div>
+            <div class="ach-item locked" id="ach-10k">
+              <span class="ach-icon">🥇</span>
+              <span class="ach-name">10K Goal</span>
+            </div>
+            <div class="ach-item locked" id="ach-1km">
+              <span class="ach-icon">🏅</span>
+              <span class="ach-name">1 km Walk</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══ PAGE: SETTINGS ══ -->
+    <div class="page" id="page-settings">
+      <div class="settings-page">
+        <h2>Settings</h2>
+
+        <div class="setting-group">
+          <div class="sg-title">Daily Step Goal</div>
+          <div class="sg-row">
+            <input type="range" id="goal-slider" min="1000" max="20000" step="500" value="10000"
+              oninput="updateGoal(this.value)" />
+            <span class="sg-val" id="goal-display">10,000</span>
+          </div>
+        </div>
+
+        <div class="setting-group">
+          <div class="sg-title">Step Detection Sensitivity</div>
+          <div class="sg-row">
+            <input type="range" id="sens-slider" min="0.5" max="2.5" step="0.1" value="1.15"
+              oninput="updateSensitivity(this.value)" />
+            <span class="sg-val" id="sens-display">1.15</span>
+          </div>
+        </div>
+
+        <div class="setting-group">
+          <div class="sg-title">Stride Length</div>
+          <div class="sg-row">
+            <input type="range" id="stride-slider" min="0.5" max="1.2" step="0.01" value="0.762"
+              oninput="updateStride(this.value)" />
+            <span class="sg-val" id="stride-display">0.76 m</span>
+          </div>
+        </div>
+
+        <div class="setting-group">
+          <div class="sg-title">Map Theme</div>
+          <div class="theme-btns">
+            <button class="theme-btn active" onclick="setMapTheme('dark', this)">Dark</button>
+            <button class="theme-btn" onclick="setMapTheme('street', this)">Street</button>
+            <button class="theme-btn" onclick="setMapTheme('satellite', this)">Satellite</button>
+          </div>
+        </div>
+
+        <div class="setting-group">
+          <div class="sg-title">App Info</div>
+          <div class="info-box">
+            <div class="info-row"><span>Version</span><span>2.0.0</span></div>
+            <div class="info-row"><span>Map</span><span>OpenStreetMap (Free)</span></div>
+            <div class="info-row"><span>Sensor</span><span id="info-sensor">Checking…</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </main>
+
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
   <script src="tracker.js"></script>
 </body>
