@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
+  <title>Fitness Tracker</title>
+
+  <!-- Leaflet CSS (free map, no API key needed) -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <div class="app">
+
+    <!-- Header -->
+    <header class="header">
+      <div class="header-icon">🏃</div>
+      <div>
+        <h1>Fitness Tracker</h1>
+        <p class="subtitle">Step Counter + Live GPS Route</p>
+      </div>
+    </header>
+
+    <!-- Big Step Counter -->
+    <section class="hero-card">
+      <div class="hero-label">STEPS TODAY</div>
+      <div class="hero-value" id="step-count">0</div>
+      <div class="goal-row">
+        <span id="goal-text">0 / 10,000</span>
+        <span id="goal-pct">0%</span>
+      </div>
+      <div class="progress-bar">
+        <div class="progress-fill" id="progress-fill"></div>
+      </div>
+    </section>
+
+    <!-- Stats Row -->
+    <section class="stats-row">
+      <div class="stat-box">
+        <div class="stat-icon">📍</div>
+        <div class="stat-val" id="distance">0.00</div>
+        <div class="stat-lbl">km</div>
+      </div>
+      <div class="stat-box">
+        <div class="stat-icon">🔥</div>
+        <div class="stat-val" id="calories">0</div>
+        <div class="stat-lbl">kcal</div>
+      </div>
+      <div class="stat-box">
+        <div class="stat-icon">⏱️</div>
+        <div class="stat-val" id="duration">00:00</div>
+        <div class="stat-lbl">time</div>
+      </div>
+      <div class="stat-box">
+        <div class="stat-icon">💨</div>
+        <div class="stat-val" id="speed">0.0</div>
+        <div class="stat-lbl">km/h</div>
+      </div>
+    </section>
+
+    <!-- Map -->
+    <section class="map-wrap">
+      <div id="map"></div>
+      <div class="map-placeholder" id="map-placeholder">
+        <div class="placeholder-inner">
+          <span class="placeholder-icon">🗺️</span>
+          <span>Start tracking to see your route</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- Controls -->
+    <section class="controls">
+      <button class="btn btn-start" id="btn-start" onclick="startTracking()">▶ Start</button>
+      <button class="btn btn-stop"  id="btn-stop"  onclick="stopTracking()"  disabled>⏹ Stop</button>
+      <button class="btn btn-reset" id="btn-reset" onclick="resetTracking()">🔄 Reset</button>
+    </section>
+
+    <!-- Status -->
+    <div class="status-bar">
+      <span id="status-msg">Ready — press Start to begin</span>
+      <span class="gps-badge" id="gps-badge">GPS Off</span>
+    </div>
+
+    <!-- Detail Panel -->
+    <section class="detail-panel">
+      <div class="detail-row">
+        <span class="detail-lbl">Sensor</span>
+        <span class="detail-val" id="sensor-status">—</span>
+      </div>
+      <div class="detail-row">
+        <span class="detail-lbl">GPS Accuracy</span>
+        <span class="detail-val" id="gps-acc">—</span>
+      </div>
+      <div class="detail-row">
+        <span class="detail-lbl">Avg Pace</span>
+        <span class="detail-val" id="avg-pace">—</span>
+      </div>
+      <div class="detail-row">
+        <span class="detail-lbl">Route Points</span>
+        <span class="detail-val" id="route-pts">0</span>
+      </div>
+    </section>
+
+  </div>
+
+  <!-- Leaflet JS (free, no API key) -->
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script src="tracker.js"></script>
+</body>
+</html>
